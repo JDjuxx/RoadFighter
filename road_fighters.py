@@ -22,7 +22,8 @@ width=514
 length=429
 screen = pygame.display.set_mode((width,length), 0 ,32)
 
-start_background=pygame.image.load("RoadFighter.png")
+start_background=pygame.image.load("jugar_roadfighter.png")
+start_background_ranking=pygame.image.load("ranking_roadfighter.png")
 background = [pygame.image.load("car_game.jpg"),pygame.image.load("car_game2.png"),pygame.image.load("car_game3.png"),pygame.image.load("car_game4.png"),pygame.image.load("car_game5.jpg")]
 level=0
 limits=[(165,328),(140,280),(145,280),(160,264),(163,250)]
@@ -54,18 +55,25 @@ def includeUsuario():
     intro()
 
 def intro():
-    time=1
-    while True:
-        time+=1
-        screen.blit(start_background,(0,0))
-        if time%200<130:
-            screen.blit(intro_text,(150,length/2))
+    option=0
+    paused = True
+    screen.blit(start_background,(0,0))
+    while paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-
             if event.type == KEYDOWN:
-                start(level,gas)
+                if event.key == pygame.K_DOWN:
+                    screen.blit(start_background_ranking,(0,0)) 
+                    option = 1
+                if event.key == pygame.K_UP:
+                    screen.blit(start_background,(0,0))
+                    option = 0
+                if event.key == pygame.K_RETURN:
+                    if option == 0:
+                        start(level,gas)
+                        
+        pygame.display.flip()
         pygame.display.update()
 
 ##
@@ -95,7 +103,7 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     pygame.quit()
-                    quit()
+                    intro()
                 else:    
                     paused = False
             
