@@ -113,8 +113,7 @@ def pause():
         screen.blit(pause_img,(130,70))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                intro()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
