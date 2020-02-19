@@ -94,7 +94,7 @@ def high_score(level,distance):
 def pause():
     paused = True
     while paused:
-        screen.blit(pause_img,(0,100))
+        screen.blit(pause_img,(130,70))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
