@@ -2,6 +2,10 @@ import pygame
 from pygame.locals import *
 import random
 import time
+import plotly.graph_objects as go
+import metodos as met
+import pandas as pd 
+import numpy as np
 
 pygame.init()
 
@@ -50,11 +54,18 @@ usuarioId = ''
 class enemy():
     y_position=-150
 
-def includeUsuario():
-    usuarioId = input('Ingresa el nombre de usuario: ')
-    intro()
+def ranking():
+    data = met.get_puntuacion_pythomers()
+    df = pd.DataFrame(data)
+    df = df.sort_values(by="puntuacionMaxima",ascending= False).head(10)
+    fig = go.Figure(data=[go.Table(header=dict(values=['ID USUARIO', 'PUNTUACIONES']),
+        cells=dict(values=[df['idUsuario'].values,df['puntuacionMaxima'].values]))
+            ])
+    fig.show()
+
 
 def intro():
+    usuarioId = input('Ingresa el ID de usuario: ')
     option=0
     paused = True
     screen.blit(start_background,(0,0))
@@ -69,9 +80,14 @@ def intro():
                 if event.key == pygame.K_UP:
                     screen.blit(start_background,(0,0))
                     option = 0
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
                 if event.key == pygame.K_RETURN:
                     if option == 0:
-                        start(level,gas)
+                        start(level,gas,usuarioId)
+                    if option == 1:
+                        ranking()
                         
         pygame.display.flip()
         pygame.display.update()
@@ -120,7 +136,7 @@ def start_light(car_x,y_image,level):
         else:
             screen.blit(start_show[i],(int((limits[level][0] + limits[level][1])/2)-6,100))
             screen.blit(lights[0],(415,50))
-        message_to_screen("START",level,320)#############
+        message_to_screen("START",level,320)
         pygame.display.update()
         time.sleep(1)
 
@@ -133,7 +149,7 @@ def message_to_screen(msg,level,y):
     screen.blit(screen_text, textRect)
 
 
-def start(level,gas):
+def start(level,gas,idUsuario):
     enemies=[]
     oils=[]
     bullet=[-50,-50]
@@ -155,11 +171,10 @@ def start(level,gas):
     
     while e:
         if gameOver:
-            ##high_score()
-            
             time.sleep(2)
+            met.subir_puntuacion_pythomers(idUsuario,level,score,score)
             level=0
-            start(level,2000)
+            start(level,2000,idUsuario)
         
         if gameOver==False and round_win==False:
             y_image+=1
@@ -197,10 +212,6 @@ def start(level,gas):
             danger=enemy()
             danger.x_position=random.randrange(limits[level][0],limits[level][1]) ### 165-328
             danger.rand=random.randrange(0,6)
-##            if danger.rand==3:### hole vs gas_bonus not to be in the same position
-##                for o in oils:
-##                    while abs(o.x_position-danger.x_position)<40:
-##                        danger.x_position=random.randrange(limits[level][0],limits[level][1])
             enemies.append(danger)
 
         if  int(score*10) %500==0:
@@ -324,7 +335,7 @@ def start(level,gas):
                 time.sleep(2)
                 if level<4:
                     level+=1
-                    start(level,2000)
+                    start(level,2000,idUsuario)
                 else:
                     screen.blit(text_win,(limits[level][0]-80,length/3))###########################################################
                     pygame.display.update()
@@ -351,7 +362,6 @@ def start(level,gas):
         text_score = font1.render("Puntuación: "+ str(round(score*100/100,1)), True, (255, 255, 255))
         text_score1 = font1.render("Gasolina: "+ str(int(gas/100)) +" Liters", True, (255, 255, 255))
         text_score2 = font1.render("Nivel: "+ str(level+1), True, (255, 255, 255))
-        ##text_score3 = font1.render("Bullets: "+ str(bullets), True, (255, 255, 255))
         percentage = font1.render(str(int(round((score/340)*100,0))) +"%", True, (255, 255, 255))
         
         screen.blit(text_score2,(width-129,3))
@@ -366,4 +376,4 @@ def start(level,gas):
 
         pygame.display.update()
 
-includeUsuario()
+intro()
