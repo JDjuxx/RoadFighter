@@ -30,7 +30,7 @@ limits=[(165,328),(140,280),(145,280),(160,264),(163,250)]
 
 flag = pygame.image.load("left_flag.png")
 car_yellow=[pygame.image.load("car_yellow.png"),pygame.image.load("car2.jpg"),pygame.image.load("car3.png"),pygame.image.load("hole.png"),pygame.image.load("car5.png"),pygame.image.load("car6.png")]
-lights=[pygame.image.load("red_light.jpg"),pygame.image.load("green_light.jpg")]
+lights=[pygame.image.load("red_light.png"),pygame.image.load("green_light.png")]
 careful=pygame.image.load("careful.jpg")
 
 car= pygame.image.load("car1.png").convert()
@@ -101,7 +101,6 @@ def pause():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
-                    pygame.quit()
                     intro()
                 else:    
                     paused = False
